@@ -1,6 +1,4 @@
 const { ApplicationCommandOptionType, ChatInputCommandInteraction, MessageComponentInteraction, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
-const { init } = require('../models/NotificationConfig');
-
 
 const choices = [
     { name: 'Rock', emoji: '🪨', beats: 'Scissors' },
@@ -9,7 +7,11 @@ const choices = [
 ];
 module.exports = {
 
-    
+    /**
+     * 
+     * @param {Object} param0 
+     * @param {ChatInputCommandInteraction} param0.interaction
+     */
 
     run: async ({ interaction }) => {
         try {
@@ -34,7 +36,7 @@ module.exports = {
             };
 
             const embed = new EmbedBuilder()
-                .setTitle('Rock Paper Scissors')
+                .setTitle(`Rock Paper Scissors`)
                 .setDescription(`It's currently ${targetUser}'s turn.`)
                 .setColor('Green')
                 .setTimestamp(new Date());
@@ -51,16 +53,16 @@ module.exports = {
             const row = new ActionRowBuilder().addComponents(buttons);
 
             const reply = await interaction.reply({
-                content: `${targetUser}, you have been challenged to the rock paper scissor game by ${interaction.user}. To start playing, click one of the buttons below.\nHave a great time.`,
+                content: `# **${targetUser}, you have been challenged to the rock paper scissor game by ${interaction.user}**. **To start playing, click one of the buttons below**.\n**## Have a great time!**`,
                 embeds: [embed],
                 components: [row],
             });
 
             const targetUserInteraction = await reply.awaitMessageComponent({
                 filter: (i) => i.user.id === targetUser.id,
-                time: 30000,
+                time: 30_000,
             }).catch(async (error) => {
-                embed.setDescription(`Game ended. ${targetUser} did not responded in time.`);
+                embed.setDescription(`## Game ended. ${targetUser} did not responded in time.`);
                 await reply.edit({ embeds: [embed], components: [] });
             });
 
@@ -71,11 +73,11 @@ module.exports = {
             );
 
 
-            await targetUserInteraction.reply({content: `You picked ${targetUserChoice.name + targetUserChoice.emoji}`, ephemeral: true});
+            await targetUserInteraction.reply({content: `You picked ${targetUserChoice.name + targetUserChoice.emoji}`, ephemeral: true,});
 
             // Edit embed with the updated user turn
 
-            embeds.setDescription(`It's currently ${interaction.user}'s turn.`);
+            embed.setDescription(`## It's currently ${interaction.user}'s turn.`);
             await reply.edit({
                 content: `${interaction.user} it's your turn now.`,
                 embeds: [embed],
@@ -85,7 +87,7 @@ module.exports = {
                 filter: (i) => i.user.id === interaction.user.id,
                 time: 30000,
             }).catch(async (error) => {
-                embed.setDescription(`Game ended. ${interaction.user} did not responded in time.`);
+                embed.setDescription(`## Game ended. ${interaction.user} did not responded in time.`);
                 await reply.edit({ embeds: [embed], components: [] });
             });
 
@@ -98,19 +100,21 @@ module.exports = {
             let result;
 
             if(targetUserChoice.beats === initialUserChoice.name) {
-                result = `${targetUser} won!`;
+                result = `# ${targetUser} won! 🎉`;
             }
             
             if (initialUserChoice.beats === targetUserChoice.name) {
-                result = `${interaction.user} won!`;
+                result = `# ${interaction.user} won! 🎉`;
             }
 
             if (targetUserChoice.name === initialUserChoice.name) {
-                result = `It was a tie!`;
+                result = "# It was a tie!";
             }
 
             embed.setDescription(
-                `${targetUser} picked ${targetUserChoice.name + targetUserChoice.emoji}\n${interaction.user} picked ${initialUserChoice.name + initialUserChoice.emoji}\n\n${result}`
+                `## ${targetUser} picked ${targetUserChoice.name + targetUserChoice.emoji}\n
+                ## ${interaction.user} picked ${initialUserChoice.name + initialUserChoice.emoji}\n\n
+                ${result}`
             );
 
             reply.edit({ embeds: [embed], components: []});

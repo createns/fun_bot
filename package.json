@@ -10,12 +10,12 @@
   "dependencies": {
     "commandkit": "^0.1.10",
     "crypto": "^1.0.1",
+    "discord-gamecord": "^4.4.2",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "mongoose": "^8.5.1",
     "rss-parser": "^3.13.0"
   },
-  "devDependencies": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
